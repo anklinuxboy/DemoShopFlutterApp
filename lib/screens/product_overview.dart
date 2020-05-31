@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'cart_view.dart';
 import '../widgets/product_overview_grid.dart';
 import '../widgets/badge.dart';
 import '../providers/cart.dart';
@@ -53,7 +54,9 @@ class _ProductOverviewState extends State<ProductOverview> {
                 Icons.shopping_cart,
                 color: Colors.white,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartView.ROUTE);
+              },
             ),
           )
         ],
