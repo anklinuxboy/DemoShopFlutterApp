@@ -6,13 +6,14 @@ import 'screens/cart_view.dart';
 import 'screens/product_detail.dart';
 import 'screens/product_overview.dart';
 import 'providers/products.dart';
+import 'providers/orders.dart';
+import 'screens/orders_view.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -22,6 +23,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => Cart(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => Orders(),
         ),
       ],
       child: MaterialApp(
@@ -36,6 +40,7 @@ class MyApp extends StatelessWidget {
         routes: {
           ProductDetail.ROUTE: (_) => ProductDetail(),
           CartView.ROUTE: (_) => CartView(),
+          OrdersView.ROUTE: (_) => OrdersView(),
         },
       ),
     );

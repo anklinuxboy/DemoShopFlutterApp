@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
 import '../widgets/cart_item.dart';
+import '../providers/orders.dart';
 
 class CartView extends StatelessWidget {
   static const ROUTE = '/cart';
@@ -50,7 +51,13 @@ class CartView extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Provider.of<Orders>(context, listen: false).addOrder(
+                        cart.items.values.toList(),
+                        cart.totalAmount,
+                      );
+                      cart.clear();
+                    },
                   )
                 ],
               ),

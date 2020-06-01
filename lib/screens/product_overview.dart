@@ -5,6 +5,7 @@ import 'cart_view.dart';
 import '../widgets/product_overview_grid.dart';
 import '../widgets/badge.dart';
 import '../providers/cart.dart';
+import '../widgets/side_drawer.dart';
 
 class ProductOverview extends StatefulWidget {
   static const ROUTE = '/product-overview';
@@ -61,6 +62,7 @@ class _ProductOverviewState extends State<ProductOverview> {
           )
         ],
       ),
+      drawer: SideDrawer(),
       body: ProductOverviewGrid(_showFavs),
     );
   }
