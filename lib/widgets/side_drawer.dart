@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../screens/orders_view.dart';
+import '../screens/user_product.dart';
 
 class SideDrawer extends StatelessWidget {
   @override
@@ -26,6 +27,14 @@ class SideDrawer extends StatelessWidget {
             title: Text('Orders'),
             onTap: () {
               Navigator.of(context).pushNamed(OrdersView.ROUTE);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Products'),
+            onTap: () {
+              Navigator.of(context).pushNamed(UserProduct.ROUTE);
             },
           ),
         ],
