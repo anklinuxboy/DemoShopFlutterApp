@@ -6,6 +6,7 @@ import '../widgets/product_overview_grid.dart';
 import '../widgets/badge.dart';
 import '../providers/cart.dart';
 import '../widgets/side_drawer.dart';
+import '../providers/products.dart';
 
 class ProductOverview extends StatefulWidget {
   static const ROUTE = '/product-overview';
@@ -16,6 +17,29 @@ class ProductOverview extends StatefulWidget {
 
 class _ProductOverviewState extends State<ProductOverview> {
   var _showFavs = false;
+  var _isLoading = false;
+  var _isInit = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).fetchAndSetProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +87,11 @@ class _ProductOverviewState extends State<ProductOverview> {
         ],
       ),
       drawer: SideDrawer(),
-      body: ProductOverviewGrid(_showFavs),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductOverviewGrid(_showFavs),
     );
   }
 }
