@@ -10,6 +10,8 @@ import 'providers/orders.dart';
 import 'screens/orders_view.dart';
 import 'screens/user_product.dart';
 import 'screens/manage_product.dart';
+import 'screens/auth_screen.dart';
+import 'providers/auth.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,31 +23,44 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => Products(),
+          create: (_) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          update: (ctx, auth, prevProd) => Products(
+            auth.token,
+            prevProd == null ? [] : prevProd.items,
+          ),
         ),
         ChangeNotifierProvider(
           create: (_) => Cart(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => Orders(),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          update: (_, auth, orders) => Orders(
+            auth.token,
+            orders == null ? [] : orders.orders,
+          ),
         ),
       ],
-      child: MaterialApp(
-        title: 'My Shop',
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.deepOrange,
-          fontFamily: 'Lato',
-          visualDensity: VisualDensity.adaptivePlatformDensity,
+      child: Consumer<Auth>(
+        builder: (ctx, authData, _) => MaterialApp(
+          title: 'My Shop',
+          theme: ThemeData(
+            primarySwatch: Colors.purple,
+            accentColor: Colors.deepOrange,
+            fontFamily: 'Lato',
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: authData != null && authData.isAuth
+              ? ProductOverview()
+              : AuthScreen(),
+          routes: {
+            ProductDetail.ROUTE: (_) => ProductDetail(),
+            CartView.ROUTE: (_) => CartView(),
+            OrdersView.ROUTE: (_) => OrdersView(),
+            UserProduct.ROUTE: (_) => UserProduct(),
+            ManageProduct.ROUTE: (_) => ManageProduct(),
+          },
         ),
-        home: ProductOverview(),
-        routes: {
-          ProductDetail.ROUTE: (_) => ProductDetail(),
-          CartView.ROUTE: (_) => CartView(),
-          OrdersView.ROUTE: (_) => OrdersView(),
-          UserProduct.ROUTE: (_) => UserProduct(),
-          ManageProduct.ROUTE: (_) => ManageProduct(),
-        },
       ),
     );
   }

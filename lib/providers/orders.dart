@@ -7,13 +7,16 @@ import '../api.dart';
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
+  final String _authToken;
+
+  Orders(this._authToken, this._orders);
 
   List<OrderItem> get orders {
     return [..._orders];
   }
 
   Future<void> fetchAndSetOrders() async {
-    const url = '$FIREBASE_URL/orders.json';
+    final url = '$FIREBASE_URL/orders.json?auth=$_authToken';
     final response = await http.get(url);
     final List<OrderItem> loadedOrders = [];
     final data = json.decode(response.body) as Map<String, dynamic>;
@@ -42,7 +45,7 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartItems, double total) async {
-    const url = '$FIREBASE_URL/orders.json';
+    final url = '$FIREBASE_URL/orders.json?auth=$_authToken';
     final dateTime = DateTime.now();
     final response = await http.post(
       url,

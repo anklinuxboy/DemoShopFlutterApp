@@ -7,7 +7,10 @@ import '../models/http_exception.dart';
 import '../api.dart';
 
 class Products with ChangeNotifier {
-  final List<Product> _products = [];
+  List<Product> _products = [];
+  final String _authToken;
+
+  Products(this._authToken, this._products);
 
   List<Product> get items {
     return [..._products];
@@ -22,7 +25,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = '$FIREBASE_URL/products/$id.json';
+    final url = '$FIREBASE_URL/products/$id.json?auth=$_authToken';
     final index = _products.indexWhere((element) => element.id == id);
     var product = _products[index];
     _products.removeAt(index);
@@ -38,16 +41,16 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    const url = '$FIREBASE_URL/products.json';
+    final url = '$FIREBASE_URL/products.json?auth=$_authToken';
     try {
       final response = await http.get(url);
-      final Map<String, Object> data = json.decode(response.body);
+      final Map<String, dynamic> data = json.decode(response.body);
       _products.clear();
       if (data == null) {
         return;
       }
       data.forEach((key, value) {
-        final mapProdData = value as Map<String, Object>;
+        final mapProdData = value as Map<String, dynamic>;
         final product = Product(
           id: key,
           title: mapProdData['title'] as String,
@@ -67,7 +70,7 @@ class Products with ChangeNotifier {
   Future<void> addProduct(Product product) async {
     final index = _products.indexWhere((element) => element.id == product.id);
     if (index >= 0 && product.id != null) {
-      final url = '$FIREBASE_URL/products/${product.id}.json';
+      final url = '$FIREBASE_URL/products/${product.id}.json?auth=$_authToken';
       await http.patch(
         url,
         body: json.encode({
@@ -81,7 +84,7 @@ class Products with ChangeNotifier {
       _products[index] = product;
       notifyListeners();
     } else {
-      const url = '$FIREBASE_URL/products.json';
+      final url = '$FIREBASE_URL/products.json?auth=$_authToken';
       try {
         final response = await http.post(
           url,
