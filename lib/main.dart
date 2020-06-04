@@ -54,7 +54,15 @@ class MyApp extends StatelessWidget {
           ),
           home: authData != null && authData.isAuth
               ? ProductOverview()
-              : AuthScreen(),
+              : FutureBuilder(
+                  future: authData.tryAutoLogin(),
+                  builder: (ctx, authResult) =>
+                      authResult.connectionState == ConnectionState.waiting
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : AuthScreen(),
+                ),
           routes: {
             ProductDetail.ROUTE: (_) => ProductDetail(),
             CartView.ROUTE: (_) => CartView(),

@@ -21,11 +21,6 @@ class _ProductOverviewState extends State<ProductOverview> {
   var _isInit = true;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     if (_isInit) {
       setState(() {
