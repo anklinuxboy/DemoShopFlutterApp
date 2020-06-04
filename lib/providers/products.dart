@@ -9,8 +9,9 @@ import '../api.dart';
 class Products with ChangeNotifier {
   List<Product> _products = [];
   final String _authToken;
+  final String _userId;
 
-  Products(this._authToken, this._products);
+  Products(this._authToken, this._userId, this._products);
 
   List<Product> get items {
     return [..._products];
@@ -40,8 +41,10 @@ class Products with ChangeNotifier {
     product = null;
   }
 
-  Future<void> fetchAndSetProducts() async {
-    final url = '$FIREBASE_URL/products.json?auth=$_authToken';
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$_userId"' : '';
+    final url = '$FIREBASE_URL/products.json?auth=$_authToken&$filterString';
     try {
       final response = await http.get(url);
       final Map<String, dynamic> data = json.decode(response.body);
@@ -79,6 +82,7 @@ class Products with ChangeNotifier {
           'price': product.price,
           'imageUrl': product.imageUrl,
           'isFavorite': product.isFavorite,
+          'creatorId': _userId,
         }),
       );
       _products[index] = product;
